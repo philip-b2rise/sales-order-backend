@@ -1,9 +1,7 @@
-entity Test {
-    key id : UUID;
-}
+using {managed} from '@sap/cds/common';
 
-entity Test2 {
-    key id   : UUID;
-        name : String;
-        test : String;
+namespace sales;
+
+entity SalesOrderHeaders : managed {
+    key id : UUID;
 }
