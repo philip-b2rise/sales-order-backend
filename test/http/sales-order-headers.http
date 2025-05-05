@@ -1,0 +1,27 @@
+@baseURL = http://localhost:4004/odata/v4/main
+@id = '3817a1c8-0ea4-433b-90de-cfacf0d798e3'
+
+GET {{baseURL}}/SalesOrderHeaders
+Content-Type: application/json
+
+###
+POST {{baseURL}}/SalesOrderHeaders
+Content-Type: application/json
+
+{}
+
+###
+GET {{baseURL}}/SalesOrderHeaders(id='{{id}}')
+Content-Type: application/json
+
+###
+DELETE {{baseURL}}/SalesOrderHeaders(id='{{id}}')
+Content-Type: application/json
+
+###
+PUT {{baseURL}}/SalesOrderHeaders(id='{{id}}')
+Content-Type: application/json
+
+{
+    "modifiedBy": "test"
+}
