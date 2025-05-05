@@ -1,0 +1,11 @@
+id,createdAt,createdBy,modifiedAt,modifiedBy
+21288996-fce3-49e0-ace1-2a562c49b42d,2009-03-31T03:00:00.000Z,createdBy.coap0@example.com,2005-10-01T03:00:00.000Z,modifiedBy.coap0@example.net
+21288997-1ffe-4638-ba88-44c7c2dba70e,2006-03-06T03:00:00.000Z,createdBy.coap1@example.com,2022-06-25T03:00:00.000Z,modifiedBy.coap1@example.net
+21288998-5afa-435b-b886-bfbb74380159,2000-01-04T03:00:00.000Z,createdBy.coap2@example.net,2023-06-09T03:00:00.000Z,modifiedBy.coap2@example.com
+21288999-da3e-494f-8bf4-2ef1cd57ac13,2008-12-08T03:00:00.000Z,createdBy.coap3@example.org,2009-03-23T03:00:00.000Z,modifiedBy.coap3@example.org
+21289000-617c-4ddc-8571-2c2a5a4756fd,2009-06-13T03:00:00.000Z,createdBy.coap4@example.org,2012-09-02T03:00:00.000Z,modifiedBy.coap4@example.com
+21289001-9fe4-46b3-8da4-1580c20d9045,2004-12-20T03:00:00.000Z,createdBy.coap5@example.net,2016-05-09T03:00:00.000Z,modifiedBy.coap5@example.net
+21289002-a4df-4694-84a8-e598ffafd288,2000-01-21T03:00:00.000Z,createdBy.coap6@example.com,2023-03-21T03:00:00.000Z,modifiedBy.coap6@example.com
+21289003-c2cd-4c70-8914-c95cb59f3dbe,2021-02-08T03:00:00.000Z,createdBy.coap7@example.com,2022-12-08T03:00:00.000Z,modifiedBy.coap7@example.com
+21289004-891a-44c7-8cf9-4c49a0168f3b,2018-04-27T03:00:00.000Z,createdBy.coap8@example.org,2005-11-09T03:00:00.000Z,modifiedBy.coap8@example.net
+21289005-640f-4262-b1d2-852d40d9ded8,2020-06-16T03:00:00.000Z,createdBy.coap9@example.net,2021-02-14T03:00:00.000Z,modifiedBy.coap9@example.org
