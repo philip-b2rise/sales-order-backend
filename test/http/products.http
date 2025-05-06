@@ -1,0 +1,19 @@
+@baseURL=http://localhost:4004/odata/v4/main
+@id=ea173034-bf12-4a0f-82ae-8e9ded453e0e
+
+GET {{baseURL}}/Products
+Content-Type: application/json
+
+###
+POST {{baseURL}}/Products
+Content-Type: application/json
+
+{
+    "id": "{{id}}",
+    "name": "Glasses",
+    "price": 100
+}
+
+###
+DELETE {{baseURL}}/Products(id={{id}})
+Content-Type: application/json

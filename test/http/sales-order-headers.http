@@ -1,25 +1,47 @@
-@baseURL = http://localhost:4004/odata/v4/main
-@id = '3817a1c8-0ea4-433b-90de-cfacf0d798e3'
+@baseURL=http://localhost:4004/odata/v4/main
+@id=6e2b7df7-a0a8-4758-ab43-08f5a61890b6
+@customerId=ea9d07f6-7b6b-4a45-a168-1a55b6c42959
+@productId=ea173034-bf12-4a0f-82ae-8e9ded453e0e
 
-GET {{baseURL}}/SalesOrderHeaders
+GET {{baseURL}}/SalesOrderHeaders?$filter=id eq {{id}}&$expand=customer,items($expand=product)
 Content-Type: application/json
 
 ###
 POST {{baseURL}}/SalesOrderHeaders
 Content-Type: application/json
 
-{}
+{
+    "id": "{{id}}",
+    "customer_id": "{{customerId}}",
+    "totalAmount": 398,
+    "items": [
+        {
+            "id": "386a9f23-d2d4-4de4-af2f-3206d50fd6b7",
+            "header_id": "{{id}}",
+            "product_id": "{{productId}}",
+            "quantity": 10,
+            "price": 2.99
+        },
+        {
+            "id": "d6794757-a545-4724-b403-c4d0705edd00",
+            "header_id": "{{id}}",
+            "product_id": "{{productId}}",
+            "quantity": 5,
+            "price": 1.99
+        }
+    ]
+}
 
 ###
-GET {{baseURL}}/SalesOrderHeaders(id='{{id}}')
+GET {{baseURL}}/SalesOrderHeaders(id={{id}})
 Content-Type: application/json
 
 ###
-DELETE {{baseURL}}/SalesOrderHeaders(id='{{id}}')
+DELETE {{baseURL}}/SalesOrderHeaders(id={{id}})
 Content-Type: application/json
 
 ###
-PUT {{baseURL}}/SalesOrderHeaders(id='{{id}}')
+PUT {{baseURL}}/SalesOrderHeaders(id={{id}})
 Content-Type: application/json
 
 {
