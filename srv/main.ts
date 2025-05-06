@@ -1,12 +1,12 @@
-import { Customer, Customers } from "@models/sales"
+import { Customers } from '@models/sales';
+import { Service } from '@sap/cds';
 
-const customer: Customer = {
-    id: '1',
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com'
+export default (service: Service) => {
+    service.after('READ', 'Customers', async (results: Customers) => {
+        results.forEach(customer => {
+            if (!customer.email?.includes('@')) {
+                customer.email = `${customer.email}@sap.com`
+            }
+        })
+    })
 }
-
-const customers: Customers = [customer]
-
-console.log(customers)
