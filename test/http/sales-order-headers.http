@@ -54,4 +54,25 @@ GET {{baseURL}}/SalesOrderHeaders?$filter=totalAmount lt 10000000
 Content-Type: application/json
 
 ###
+# Expading Items
+GET {{baseURL}}/SalesOrderHeaders?$expand=customer,items($expand=product)
+Content-Type: application/json
+
+###
+# Select only customer and sales order header id
+GET {{baseURL}}/SalesOrderHeaders?$select=customer&$expand=customer($select=email)
+Content-Type: application/json
+
+###
+# Registry count
+GET {{baseURL}}/SalesOrderHeaders/$count
+Content-Type: application/json
+
+###
+# Paging
+GET {{baseURL}}/SalesOrderHeaders?$top=5&$skip=5
+Content-Type: application/json
+
+###
+
 
