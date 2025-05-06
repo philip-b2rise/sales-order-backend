@@ -1,6 +1,6 @@
 @baseURL=http://localhost:4004/odata/v4/main
 @id=6e2b7df7-a0a8-4758-ab43-08f5a61890b6
-@customerId=ea9d07f6-7b6b-4a45-a168-1a55b6c42959
+@customerId=22781501-5700-460d-8bbc-488ea34bcbf1
 @productId=ea173034-bf12-4a0f-82ae-8e9ded453e0e
 
 GET {{baseURL}}/SalesOrderHeaders
