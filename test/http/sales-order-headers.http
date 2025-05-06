@@ -74,5 +74,17 @@ GET {{baseURL}}/SalesOrderHeaders?$top=5&$skip=5
 Content-Type: application/json
 
 ###
+# Get data with $search
+GET {{baseURL}}/SalesOrderHeaders?$search=c9dhr
+Content-Type: application/json
+
+###
+# Using orderBy
+GET {{baseURL}}/SalesOrderHeaders?$orderby=totalAmount desc
+Content-Type: application/json
+
+###
+
+
 
 
