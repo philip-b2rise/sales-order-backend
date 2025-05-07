@@ -6,6 +6,27 @@
           "database": ":memory:"
         },
         "kind": "sqlite"
+      },
+      "auth": {
+        "kind": "basic",
+        "users": {
+            "philip": {
+                "password": "philip12",
+                "roles": ["admin"],
+                "attr": {
+                    "id": 1,
+                    "groups": ["group1", "group2"]
+                }
+            },
+            "john": {
+                "password": "john12",
+                "roles": ["read_only_user"],
+                "attr": {
+                    "id": 2,
+                    "groups": ["group1"]
+                }
+            }
+        }
       }
     }
   }
