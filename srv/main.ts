@@ -4,7 +4,7 @@ import { HttpStatus } from './http';
 
 export default (service: Service) => {
     service.before('READ', '*', (request: Request) => {
-        if (!request.user.is('read_only_user')) {
+        if (!request.user.is('read_only_user') && !request.user.is('admin')) {
             return request.reject(HttpStatus.FORBIDDEN, 'Access denied')
         }
     });
@@ -53,9 +53,16 @@ export default (service: Service) => {
             }
 
             if (foundDbProduct.stock === 0) {
-                return request.reject(HttpStatus.BAD_REQUEST, `Product ${foundDbProduct.name} (${foundDbProduct.id}) out of stock`)                
+                return request.reject(HttpStatus.BAD_REQUEST, `Product ${foundDbProduct.name} (${foundDbProduct.id}) out of stock`)
             }
-        }) 
+        });
+
+        let totalAmount = 0;
+        items.forEach((item) => {
+            totalAmount += (item.quantity as number) * (item.price as number);
+        });
+
+        request.data.totalAmount = totalAmount;
     });
 
     service.after('CREATE', 'SalesOrderHeaders', async (results: SalesOrderHeaders) => {

@@ -16,8 +16,7 @@ Authorization: Basic philip:philip12
 
 {
     "id": "{{id}}",
-    "customer_id": "{{customerId}}",
-    "totalAmount": 398,
+    "customer_id": "{{customerId}}",    
     "items": [
         {
             "id": "386a9f23-d2d4-4de4-af2f-3206d50fd6b7",
