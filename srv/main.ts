@@ -61,16 +61,14 @@ export default (service: Service) => {
         items.forEach((item) => {
             totalAmount += (item.quantity as number) * (item.price as number);
         });
-        console.log('before discount', totalAmount);
         if (totalAmount > 30000) {
             totalAmount = totalAmount * 0.9;        
         }
-        console.log('after discount', totalAmount);
 
         request.data.totalAmount = totalAmount;
     });
 
-    service.after('CREATE', 'SalesOrderHeaders', async (results: SalesOrderHeaders) => {
+    service.after('CREATE', 'SalesOrderHeaders', async (results: SalesOrderHeaders, request: Request) => {
         const headersAsArray = Array.isArray(results) ? results : [results] as SalesOrderHeaders;
 
         for (const header of headersAsArray) {
@@ -92,6 +90,15 @@ export default (service: Service) => {
 
                 await cds.update('sales.Products').where({ id: foundProduct.id }).with({ stock: foundProduct.stock });
             };
+            const headersAsString = JSON.stringify(header);
+            const userAsString = JSON.stringify(request.user);
+
+            const log = [{
+                header_id: header.id,
+                userData: userAsString,
+                orderData: headersAsString
+            }];
+            await cds.create('sales.SalesOrderLogs').entries(log)
         };
     });
 }
