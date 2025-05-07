@@ -23,14 +23,14 @@ Authorization: Basic philip:philip12
             "header_id": "{{id}}",
             "product_id": "{{productId2}}",
             "quantity": 10,
-            "price": 2.99
+            "price": 1000
         },
         {
             "id": "d6794757-a545-4724-b403-c4d0705edd00",
             "header_id": "{{id}}",
             "product_id": "{{productId2}}",
             "quantity": 5,
-            "price": 1.99
+            "price": 5000
         }
     ]
 }

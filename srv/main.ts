@@ -61,6 +61,11 @@ export default (service: Service) => {
         items.forEach((item) => {
             totalAmount += (item.quantity as number) * (item.price as number);
         });
+        console.log('before discount', totalAmount);
+        if (totalAmount > 30000) {
+            totalAmount = totalAmount * 0.9;        
+        }
+        console.log('after discount', totalAmount);
 
         request.data.totalAmount = totalAmount;
     });
