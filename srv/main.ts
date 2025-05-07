@@ -3,6 +3,18 @@ import cds, { Request, Service } from '@sap/cds';
 import { HttpStatus } from './http';
 
 export default (service: Service) => {
+    service.before('READ', '*', (request: Request) => {
+        if (!request.user.is('read_only_user')) {
+            return request.reject(HttpStatus.FORBIDDEN, 'Access denied')
+        }
+    });
+
+    service.before(['WRITE', 'DELETE'], '*', (request: Request) => {
+        if (!request.user.is('admin')) {
+            return request.reject(HttpStatus.FORBIDDEN, 'Access denied for write/delete operations')
+        }
+    });
+
     service.after('READ', 'Customers', (results: Customers) => {
         results.forEach(customer => {
             if (!customer.email?.includes('@')) {
@@ -69,5 +81,5 @@ export default (service: Service) => {
                 await cds.update('sales.Products').where({ id: foundProduct.id }).with({ stock: foundProduct.stock });
             };
         };
-    })
+    });
 }

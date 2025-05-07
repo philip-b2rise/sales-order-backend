@@ -7,10 +7,12 @@
 
 GET {{baseURL}}/SalesOrderHeaders
 Content-Type: application/json
+Authorization: Basic john:john12
 
 ###
 POST {{baseURL}}/SalesOrderHeaders
 Content-Type: application/json
+Authorization: Basic philip:philip12
 
 {
     "id": "{{id}}",
@@ -37,14 +39,17 @@ Content-Type: application/json
 ###
 GET {{baseURL}}/SalesOrderHeaders(id={{id}})
 Content-Type: application/json
+Authorization: Basic philip:philip12
 
 ###
 DELETE {{baseURL}}/SalesOrderHeaders(id={{id}})
 Content-Type: application/json
+Authorization: Basic philip:philip12
 
 ###
 PUT {{baseURL}}/SalesOrderHeaders(id={{id}})
 Content-Type: application/json
+Authorization: Basic philip:philip12
 
 {
     "modifiedBy": "test"
@@ -54,37 +59,43 @@ Content-Type: application/json
 # Get all sales with total amount lower than 10000000
 GET {{baseURL}}/SalesOrderHeaders?$filter=totalAmount lt 10000000
 Content-Type: application/json
+Authorization: Basic john:john12
 
 ###
 # Expading Items
 GET {{baseURL}}/SalesOrderHeaders?$expand=customer,items($expand=product)
 Content-Type: application/json
+Authorization: Basic john:john12
 
 ###
 # Select only customer and sales order header id
 GET {{baseURL}}/SalesOrderHeaders?$select=customer&$expand=customer($select=email)
 Content-Type: application/json
+Authorization: Basic john:john12
 
 ###
 # Registry count
 GET {{baseURL}}/SalesOrderHeaders/$count
 Content-Type: application/json
+Authorization: Basic john:john12
 
 ###
 # Paging
 GET {{baseURL}}/SalesOrderHeaders?$top=5&$skip=5
 Content-Type: application/json
+Authorization: Basic john:john12
 
 ###
 # Get data with $search
 GET {{baseURL}}/SalesOrderHeaders?$search=c9dhr
 Content-Type: application/json
+Authorization: Basic john:john12
 
 ###
 # Using orderBy
 GET {{baseURL}}/SalesOrderHeaders?$orderby=totalAmount desc
 Content-Type: application/json
-
+Authorization: Basic john:john12
 ###
 
 
