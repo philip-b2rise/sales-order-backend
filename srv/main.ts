@@ -1,6 +1,8 @@
 import { Customers, Product, Products, SalesOrderHeaders, SalesOrderItem, SalesOrderItems } from '@models/sales';
 import cds, { Request, Service } from '@sap/cds';
+import { customerController } from './factories/controllers/customer';
 import { HttpStatus } from './http';
+import { CompleteRequest } from './protocols';
 import { CustomerServiceImpl } from './services/customer/implementation';
 
 export default (service: Service) => {
@@ -16,7 +18,10 @@ export default (service: Service) => {
         }
     });
 
-    service.after('READ', 'Customers', (results: Customers) => {
+    service.after('READ', 'Customers', (results: Customers, request) => {
+        const completeRequest = request as unknown as CompleteRequest<Customers>;
+        
+        completeRequest.results = customerController.afterRead(results);
         // results.forEach(customer => {
         //     if (!customer.email?.includes('@')) {
         //         customer.email = `${customer.email}@sap.com`
