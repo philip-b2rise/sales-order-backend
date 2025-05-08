@@ -8,6 +8,10 @@ type CustomerProps = {
 export class CustomerModel {
     constructor(private props: CustomerProps) {}
 
+    public static create(props: CustomerProps) {
+        return new CustomerModel(props);
+    }
+
     public get id() {
         return this.props.id;
     }
@@ -24,9 +28,15 @@ export class CustomerModel {
         return this.props.email;
     }
 
-    public setDefaultEmailDomain() {
+    public setDefaultEmailDomain(): CustomerModel {
         if (!this.props.email.includes('@')) {
             this.props.email = `${this.props.email}@sap.com`
         }
+
+        return this;
+    }
+
+    public toObject() {
+        return this.props;
     }
 }

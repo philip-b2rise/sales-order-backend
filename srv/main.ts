@@ -1,10 +1,11 @@
 import { Customers, Product, Products, SalesOrderHeaders, SalesOrderItem, SalesOrderItems } from '@models/sales';
 import cds, { Request, Service } from '@sap/cds';
 import { HttpStatus } from './http';
+import { CustomerServiceImpl } from './services/customer/implementation';
 
 export default (service: Service) => {
     service.before('READ', '*', (request: Request) => {
-        if (!request.user.is('read_only_user') && !request.user.is('admin')) {
+        if (!request.user.is('read_only_user')) {
             return request.reject(HttpStatus.FORBIDDEN, 'Access denied')
         }
     });
@@ -16,11 +17,13 @@ export default (service: Service) => {
     });
 
     service.after('READ', 'Customers', (results: Customers) => {
-        results.forEach(customer => {
-            if (!customer.email?.includes('@')) {
-                customer.email = `${customer.email}@sap.com`
-            }
-        })
+        // results.forEach(customer => {
+        //     if (!customer.email?.includes('@')) {
+        //         customer.email = `${customer.email}@sap.com`
+        //     }
+        // })
+        const service = new CustomerServiceImpl();
+        return service.afterRead(results);
     });
 
     service.before('CREATE', 'SalesOrderHeaders', async (request: Request) => {
