@@ -3,8 +3,11 @@ import { SalesOrderItemModel } from "./sales-order-item";
 type SalesOrderHeaderProps = {
     id: string;
     customerId: string;
+    totalAmount: number;
     items: SalesOrderItemModel[];
 }
+
+type SalesOrderHeaderPropsWithoutTotalAmount = Omit<SalesOrderHeaderProps, 'totalAmount'>;
 
 type CreationPayload = {
     customer_id: SalesOrderHeaderProps['customerId'];
@@ -18,6 +21,13 @@ type CreationPayloadValidationResult = {
 export class SalesOrderHeaderModel {
     constructor(private props: SalesOrderHeaderProps) {}
 
+    public static create(props: SalesOrderHeaderPropsWithoutTotalAmount): SalesOrderHeaderModel {
+        return new SalesOrderHeaderModel({
+            ...props,
+            totalAmount: 0
+        });
+    }
+
     public get id() {
         return this.props.id;
     }
@@ -26,8 +36,16 @@ export class SalesOrderHeaderModel {
         return this.props.customerId;
     }
 
+    public get totalAmount() {
+        return this.props.totalAmount;
+    }
+
     public get items() {
         return this.props.items;
+    }
+
+    public set totalAmount(amount: number) {
+        this.props.totalAmount = amount;
     }
 
     public validateCreationPayload(payload: CreationPayload): CreationPayloadValidationResult {
@@ -46,6 +64,24 @@ export class SalesOrderHeaderModel {
         return {
             hasError: false
         }
+    }
+
+    public calculateTotalAmount(): number { 
+        this.totalAmount = 0;
+        this.items.forEach((item) => {
+            this.totalAmount += (item.quantity as number) * (item.price as number);
+        });
+
+        return this.totalAmount;
+    }
+
+    public calculateDiscount(): number {
+        this.totalAmount = this.calculateTotalAmount();
+        if (this.totalAmount > 30000) {
+            this.totalAmount = this.totalAmount * 0.9;
+        }
+
+        return this.totalAmount;
     }
 
     private validateCustomerOnCreation(customerId: CreationPayload['customer_id']): CreationPayloadValidationResult {
