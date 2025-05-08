@@ -22,11 +22,7 @@ export default (service: Service) => {
         const completeRequest = request as unknown as CompleteRequest<Customers>;
         
         completeRequest.results = customerController.afterRead(results);
-        // results.forEach(customer => {
-        //     if (!customer.email?.includes('@')) {
-        //         customer.email = `${customer.email}@sap.com`
-        //     }
-        // })
+
         const service = new CustomerServiceImpl();
         return service.afterRead(results);
     });
