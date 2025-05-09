@@ -19,7 +19,7 @@ export default (service: Service) => {
         }
     });
     service.after('READ', 'Customers', (results: Customers, request) => {
-        const completeRequest = request as unknown as CompleteRequest<Customers>;        
+        const completeRequest = request as unknown as CompleteRequest<Customers>;
         completeRequest.results = customerController.afterRead(results);
         const service = new CustomerServiceImpl();
         return service.afterRead(results);
@@ -29,7 +29,7 @@ export default (service: Service) => {
         const result = await salesOrderHeaderController.beforeCreate(params);
         if (result.hasError) {
             return request.reject(HttpStatus.BAD_REQUEST, result.error?.message as string);
-        }        
+        }
         request.data.totalAmount = result.totalAmount;
     });
     service.after('CREATE', 'SalesOrderHeaders', async (salesOrderHeaders: SalesOrderHeaders, request: Request) => {

@@ -9,5 +9,4 @@ export class SalesOrderLogRepositoryImpl implements SalesOrderLogRepository {
 
         await cds.create('sales.SalesOrderLogs').entries(logsObjects);
     }
-    
 }

@@ -51,13 +51,13 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
     }
 
     public async afterCreate(params: SalesOrderHeaders, loggedUser: User): Promise<void> {
-        const headersAsArray = Array.isArray(params) ? params : [params] as SalesOrderHeaders;
+        const headersAsArray = Array.isArray(params) ? params : ([params] as SalesOrderHeaders);
         const logs: SalesOrderLogModel[] = [];
 
         for (const header of headersAsArray) {
-            const products = await this.getProductsByIds(header) as ProductModel[];
+            const products = (await this.getProductsByIds(header)) as ProductModel[];
             const items = this.getSalesOrderItems(header, products);
-            const salesOrderHeader = this.getExistingSalesOrderHeader(header, items);            
+            const salesOrderHeader = this.getExistingSalesOrderHeader(header, items);
             const productsData = salesOrderHeader.getProductData();
 
             for (const product of products) {
@@ -83,12 +83,14 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
     }
 
     private getSalesOrderItems(params: SalesOrderHeader, products: ProductModel[]): SalesOrderItemModel[] {
-        const items = params.items?.map((item) => SalesOrderItemModel.create({
-            productId: item.product_id as string,
-            price: item.price as number,
-            quantity: item.quantity as number,
-            products
-        })) as SalesOrderItemModel[];
+        const items = params.items?.map((item) =>
+            SalesOrderItemModel.create({
+                productId: item.product_id as string,
+                price: item.price as number,
+                quantity: item.quantity as number,
+                products
+            })
+        ) as SalesOrderItemModel[];
 
         return items;
     }
@@ -137,4 +139,3 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
         });
     }
 }
-

@@ -5,18 +5,18 @@ type SalesOrderHeaderProps = {
     customerId: string;
     totalAmount: number;
     items: SalesOrderItemModel[];
-}
+};
 
 type SalesOrderHeaderPropsWithoutIdAndTotalAmount = Omit<SalesOrderHeaderProps, 'id' | 'totalAmount'>;
 
 type CreationPayload = {
     customer_id: SalesOrderHeaderProps['customerId'];
-}
+};
 
 type CreationPayloadValidationResult = {
     hasError: boolean;
     error?: Error;
-}
+};
 
 export class SalesOrderHeaderModel {
     constructor(private props: SalesOrderHeaderProps) {}
@@ -64,14 +64,14 @@ export class SalesOrderHeaderModel {
 
         if (itemsValidationResult.hasError) {
             return itemsValidationResult;
-        }        
+        }
 
         return {
             hasError: false
         };
     }
 
-    public calculateTotalAmount(): number { 
+    public calculateTotalAmount(): number {
         let totalAmount = 0;
         this.items.forEach((item) => {
             totalAmount += (item.quantity as number) * (item.price as number);
@@ -89,12 +89,11 @@ export class SalesOrderHeaderModel {
         return totalAmount;
     }
 
-    public getProductData(): {id: string, quantity: number}[] {
-        return this.items.map((item) =>  ({
+    public getProductData(): { id: string; quantity: number }[] {
+        return this.items.map((item) => ({
             id: item.productId,
             quantity: item.quantity as number
-        })
-        );
+        }));
     }
 
     public toStringifiedObject(): string {
@@ -112,7 +111,6 @@ export class SalesOrderHeaderModel {
         return {
             hasError: false
         };
-        
     }
 
     private validateItemsOnCreation(items: SalesOrderHeaderProps['items']): CreationPayloadValidationResult {
@@ -124,7 +122,7 @@ export class SalesOrderHeaderModel {
         }
 
         const itemsErrors: string[] = [];
-        
+
         this.items.forEach((item) => {
             const validationResult = item.validateCreationPayload({ product_id: item.productId });
 

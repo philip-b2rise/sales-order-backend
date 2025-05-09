@@ -13,12 +13,14 @@ export class ProductRepositoryImpl implements ProductRepository {
             return null;
         }
 
-        return products.map((product) => ProductModel.with({
-            id: product.id as string,
-            name: product.name as string,
-            price: product.price as number,
-            stock: product.stock as number,
-        }));
+        return products.map((product) =>
+            ProductModel.with({
+                id: product.id as string,
+                name: product.name as string,
+                price: product.price as number,
+                stock: product.stock as number
+            })
+        );
     }
 
     public async updateStock(product: ProductModel): Promise<void> {

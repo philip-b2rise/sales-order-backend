@@ -6,18 +6,18 @@ export type SalesOrderItemProps = {
     quantity: number;
     price: number;
     products: ProductModel[];
-}
+};
 
 type SalesOrderItemPropsWithoutId = Omit<SalesOrderItemProps, 'id'>;
 
 type CreationPayload = {
     product_id: SalesOrderItemProps['productId'];
-}
+};
 
 type CreationPayloadValidationResult = {
     hasError: boolean;
     error?: Error;
-}
+};
 
 export class SalesOrderItemModel {
     constructor(private props: SalesOrderItemProps) {}
@@ -25,7 +25,7 @@ export class SalesOrderItemModel {
     public static create(props: SalesOrderItemPropsWithoutId): SalesOrderItemModel {
         return new SalesOrderItemModel({
             ...props,
-            id: crypto.randomUUID(),
+            id: crypto.randomUUID()
         });
     }
 

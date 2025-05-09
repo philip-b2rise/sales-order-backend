@@ -3,7 +3,7 @@ export type CustomerProps = {
     firstName: string;
     lastName: string;
     email: string;
-}
+};
 
 export class CustomerModel {
     constructor(private props: CustomerProps) {}
