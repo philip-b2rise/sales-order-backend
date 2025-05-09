@@ -1,5 +1,5 @@
-import { CustomerController } from './protocols';
-import { CustomerService } from 'srv/services/customer/protocols';
+import { CustomerController } from '@/controllers/customer/protocols';
+import { CustomerService } from '@/services/customer/protocols';
 import { Customers } from '@models/sales';
 
 export class CustomerControllerImpl implements CustomerController {

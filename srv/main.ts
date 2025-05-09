@@ -1,4 +1,5 @@
 import { Request, Service } from '@sap/cds';
+import './configs/module-alias';
 
 import { CompleteRequest } from './protocols';
 import { CustomerServiceImpl } from './services/customer/implementation';

@@ -1,4 +1,4 @@
-import { CustomerModel } from 'srv/models/customer';
+import { CustomerModel } from '@/models/customer';
 import { CustomerService } from './protocols';
 import { Customers } from '@models/sales';
 
