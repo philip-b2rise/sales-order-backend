@@ -1,16 +1,19 @@
-import { SalesOrderHeader } from "@models/sales";
+import { SalesOrderHeader, SalesOrderHeaders } from "@models/sales";
 import { CustomerModel } from "srv/models/customer";
 import { ProductModel } from "srv/models/product";
 import { SalesOrderHeaderModel } from "srv/models/sales-order-header";
 import { SalesOrderItemModel } from "srv/models/sales-order-item";
+import { SalesOrderLogModel } from "srv/models/sales-order-log";
 import { CustomerRepository } from "srv/repositories/customer/protocols";
 import { ProductRepository } from "srv/repositories/product/protocols";
+import { SalesOrderLogRepository } from "srv/repositories/sales-order-log/protocols";
 import { CreationPayloadValidationResult, SalesOrderHeaderService } from "./protocols";
 
 export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
     constructor(
+        private readonly customerRepository: CustomerRepository,
         private readonly productRepository: ProductRepository,
-        private readonly customerRepository: CustomerRepository
+        private readonly salesOrderLogRepository: SalesOrderLogRepository
     ) {}
 
     public async beforeCreate(params: SalesOrderHeader): Promise<CreationPayloadValidationResult> {
@@ -45,6 +48,34 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
             hasError: false,
             totalAmount: header.calculateDiscount()
         }
+    }
+
+    public async afterCreate(params: SalesOrderHeaders): Promise<void> {
+        const headersAsArray = Array.isArray(params) ? params : [params] as SalesOrderHeaders;
+        const logs: SalesOrderLogModel[] = [];
+
+        for (const header of headersAsArray) {
+            const products = await this.getProductsByIds(header) as ProductModel[];
+            const items = this.getSalesOrderItems(header, products);
+            const salesOrderHeader = this.getSalesOrderHeader(header, items);            
+            const productsData = salesOrderHeader.getProductData();
+
+            for (const product of products) {
+                const foundProduct = productsData.find((productData) => productData.id === product.id);
+                product.sell(foundProduct?.quantity as number);
+                await this.productRepository.updateStock(product)
+            }
+
+            const log = SalesOrderLogModel.create({
+                headerId: salesOrderHeader.id,
+                userData: '',
+                orderData: salesOrderHeader.toStringifiedObject()
+            })
+
+            logs.push(log);
+        }
+
+        await this.salesOrderLogRepository.create(logs);
     }
 
     private async getProductsByIds(params: SalesOrderHeader): Promise<ProductModel[] | null> {

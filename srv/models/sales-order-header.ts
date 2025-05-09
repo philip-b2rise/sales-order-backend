@@ -85,6 +85,18 @@ export class SalesOrderHeaderModel {
         return totalAmount;
     }
 
+    public getProductData(): {id: string, quantity: number}[] {
+        return this.items.map((item) =>  ({
+                id: item.productId,
+                quantity: item.quantity as number
+            })
+        );
+    }
+
+    public toStringifiedObject(): string {
+        return JSON.stringify(this.props);
+    }
+
     private validateCustomerOnCreation(customerId: CreationPayload['customer_id']): CreationPayloadValidationResult {
         if (!customerId) {
             return {

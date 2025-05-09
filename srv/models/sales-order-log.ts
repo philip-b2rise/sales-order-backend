@@ -1,0 +1,44 @@
+type SalesOrderLogProps = {
+    id: string;
+    headerId: string;
+    userData: string;
+    orderData: string;
+}
+
+type SalesOrderLogWithoutId = Omit<SalesOrderLogProps, 'id'>;
+
+export class SalesOrderLogModel {
+    constructor(private props: SalesOrderLogProps) {}
+
+    public static create(props: SalesOrderLogWithoutId) {
+        return new SalesOrderLogModel({
+            ...props,
+            id: crypto.randomUUID(),
+        });
+    }
+
+    public get id() {
+        return this.props.id;
+    }
+
+    public get headerId() {
+        return this.props.headerId;
+    } 
+
+    public get userData() { 
+        return this.props.userData;
+    }
+
+    public get orderData() {
+        return this.props.orderData;
+    }
+
+    public toObject(): SalesOrderLogProps {
+        return {
+            id: this.id,
+            headerId: this.headerId,
+            userData: this.userData,
+            orderData: this.orderData,
+        }
+    }
+}
