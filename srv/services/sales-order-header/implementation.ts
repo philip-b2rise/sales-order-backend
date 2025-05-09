@@ -1,5 +1,8 @@
+import { User } from "@sap/cds";
+
 import { SalesOrderHeader, SalesOrderHeaders } from "@models/sales";
 import { CustomerModel } from "srv/models/customer";
+import { LoggedUserModel } from "srv/models/logged-user";
 import { ProductModel } from "srv/models/product";
 import { SalesOrderHeaderModel } from "srv/models/sales-order-header";
 import { SalesOrderItemModel } from "srv/models/sales-order-item";
@@ -50,14 +53,14 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
         }
     }
 
-    public async afterCreate(params: SalesOrderHeaders): Promise<void> {
+    public async afterCreate(params: SalesOrderHeaders, loggedUser: User): Promise<void> {
         const headersAsArray = Array.isArray(params) ? params : [params] as SalesOrderHeaders;
         const logs: SalesOrderLogModel[] = [];
 
         for (const header of headersAsArray) {
             const products = await this.getProductsByIds(header) as ProductModel[];
             const items = this.getSalesOrderItems(header, products);
-            const salesOrderHeader = this.getSalesOrderHeader(header, items);            
+            const salesOrderHeader = this.getExistingSalesOrderHeader(header, items);            
             const productsData = salesOrderHeader.getProductData();
 
             for (const product of products) {
@@ -66,11 +69,8 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
                 await this.productRepository.updateStock(product)
             }
 
-            const log = SalesOrderLogModel.create({
-                headerId: salesOrderHeader.id,
-                userData: '',
-                orderData: salesOrderHeader.toStringifiedObject()
-            })
+            const user = this.getLoggedUser(loggedUser);
+            const log = this.getSalesOrderLog(salesOrderHeader, user);
 
             logs.push(log);
         }
@@ -110,6 +110,34 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
         const customer = await this.customerRepository.findById(customerId);
 
         return customer;
+    }
+
+    private getLoggedUser(loggedUser: User): LoggedUserModel {
+        return LoggedUserModel.create({
+            id: loggedUser.id,
+            roles: loggedUser.roles as string[],
+            attributes: {
+                id: loggedUser.attr.id as unknown as number,
+                groups: loggedUser.attr.groups as unknown as string[]
+            }
+        })
+    }
+
+    private getSalesOrderLog(header: SalesOrderHeaderModel, user: LoggedUserModel): SalesOrderLogModel {
+        return SalesOrderLogModel.create({
+            headerId: header.id,
+            userData: user.toStringifiedObject(),
+            orderData: header.toStringifiedObject()
+        })
+    }
+
+    private getExistingSalesOrderHeader(header: SalesOrderHeader, items: SalesOrderItemModel[]): SalesOrderHeaderModel {
+        return SalesOrderHeaderModel.with({
+            id: header.id as string,
+            customerId: header.customer_id as string,
+            items,
+            totalAmount: header.totalAmount as number
+        })
     }
 }
 

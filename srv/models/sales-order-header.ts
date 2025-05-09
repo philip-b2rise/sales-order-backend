@@ -29,6 +29,10 @@ export class SalesOrderHeaderModel {
         });
     }
 
+    public static with(props: SalesOrderHeaderProps): SalesOrderHeaderModel {
+        return new SalesOrderHeaderModel(props);
+    }
+
     public get id() {
         return this.props.id;
     }

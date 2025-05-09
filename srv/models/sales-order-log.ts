@@ -7,6 +7,10 @@ type SalesOrderLogProps = {
 
 type SalesOrderLogWithoutId = Omit<SalesOrderLogProps, 'id'>;
 
+type SalesOrderLogDbProps = Omit<SalesOrderLogProps, 'headerId'> & {
+    header_id: string;
+};
+
 export class SalesOrderLogModel {
     constructor(private props: SalesOrderLogProps) {}
 
@@ -33,10 +37,10 @@ export class SalesOrderLogModel {
         return this.props.orderData;
     }
 
-    public toObject(): SalesOrderLogProps {
+    public toObject(): SalesOrderLogDbProps {
         return {
             id: this.id,
-            headerId: this.headerId,
+            header_id: this.headerId,
             userData: this.userData,
             orderData: this.orderData,
         }
