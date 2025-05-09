@@ -1,4 +1,4 @@
-import { SalesOrderItemModel } from "./sales-order-item";
+import { SalesOrderItemModel } from './sales-order-item';
 
 type SalesOrderHeaderProps = {
     id: string;
@@ -68,7 +68,7 @@ export class SalesOrderHeaderModel {
 
         return {
             hasError: false
-        }
+        };
     }
 
     public calculateTotalAmount(): number { 
@@ -91,9 +91,9 @@ export class SalesOrderHeaderModel {
 
     public getProductData(): {id: string, quantity: number}[] {
         return this.items.map((item) =>  ({
-                id: item.productId,
-                quantity: item.quantity as number
-            })
+            id: item.productId,
+            quantity: item.quantity as number
+        })
         );
     }
 
@@ -106,12 +106,12 @@ export class SalesOrderHeaderModel {
             return {
                 hasError: true,
                 error: new Error('Customer ID is required')
-            }
+            };
         }
 
         return {
             hasError: false
-        }
+        };
         
     }
 
@@ -120,13 +120,13 @@ export class SalesOrderHeaderModel {
             return {
                 hasError: true,
                 error: new Error('Items are required')
-            }
+            };
         }
 
         const itemsErrors: string[] = [];
         
         this.items.forEach((item) => {
-            const validationResult = item.validateCreationPayload({product_id: item.productId});
+            const validationResult = item.validateCreationPayload({ product_id: item.productId });
 
             if (validationResult.hasError) {
                 itemsErrors.push(validationResult.error?.message as string);
@@ -138,11 +138,11 @@ export class SalesOrderHeaderModel {
             return {
                 hasError: true,
                 error: new Error(messages)
-            }
+            };
         }
 
         return {
             hasError: false
-        }
+        };
     }
 }

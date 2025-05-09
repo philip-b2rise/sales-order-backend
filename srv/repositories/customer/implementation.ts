@@ -1,7 +1,7 @@
 import cds from '@sap/cds';
 
-import { CustomerModel } from "srv/models/customer";
-import { CustomerRepository } from "./protocols";
+import { CustomerModel } from 'srv/models/customer';
+import { CustomerRepository } from './protocols';
 
 export class CustomerRepositoryImpl implements CustomerRepository {
     public async findById(id: string): Promise<CustomerModel | null> {

@@ -1,4 +1,4 @@
-import { ProductModel } from "./product";
+import { ProductModel } from './product';
 
 export type SalesOrderItemProps = {
     id: string;
@@ -56,18 +56,18 @@ export class SalesOrderItemModel {
             return {
                 hasError: true,
                 error: new Error(`Product ${payload.product_id} not found`)
-            }
+            };
         }
 
         if (product.stock === 0) {
             return {
                 hasError: true,
                 error: new Error(`Product ${product.name} (${product.id}) out of stock`)
-            }
+            };
         }
 
         return {
             hasError: false
-        }
+        };
     }
 }
