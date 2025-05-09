@@ -34,7 +34,7 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
             }
         }
 
-        const headerValidationResult =header.validateCreationPayload({customer_id: customer.id});
+        const headerValidationResult = header.validateCreationPayload({customer_id: customer.id});
 
 
         if (headerValidationResult.hasError) {

@@ -1,10 +1,10 @@
-import { Customers, Product, Products, SalesOrderHeaders, SalesOrderItem, SalesOrderItems } from '@models/sales';
+import { Customers, Product, Products, SalesOrderHeaders, SalesOrderItems } from '@models/sales';
 import cds, { Request, Service } from '@sap/cds';
 import { customerController } from './factories/controllers/customer';
+import { salesOrderHeaderController } from './factories/controllers/sales-order-header';
 import { HttpStatus } from './http';
 import { CompleteRequest } from './protocols';
 import { CustomerServiceImpl } from './services/customer/implementation';
-
 export default (service: Service) => {
     service.before('READ', '*', (request: Request) => {
         if (!request.user.is('read_only_user')) {
@@ -29,47 +29,13 @@ export default (service: Service) => {
 
     service.before('CREATE', 'SalesOrderHeaders', async (request: Request) => {
         const params = request.data;
-        const items: SalesOrderItems = params.items;
+        const result = await salesOrderHeaderController.beforeCreate(params);
 
-        if (!params.customer_id) {
-            return request.reject(HttpStatus.BAD_REQUEST, 'Customer ID is required')
+        if (result.hasError) {
+            return request.reject(HttpStatus.BAD_REQUEST, result.error?.message as string);
         }
-
-        const customerQuery = SELECT.one.from('sales.Customers').where({ id: params.customer_id })
-        const customer = await cds.run(customerQuery)
-
-        if (!customer) {
-            return request.reject(HttpStatus.NOT_FOUND, 'Customer not found')
-        }
-
-        if (!params.items || !params.items?.length) {
-            return request.reject(HttpStatus.BAD_REQUEST, 'Items are required')
-        }
-
-        const productsIds: string[]= params.items.map((item: SalesOrderItem) => item.product_id);
-        const productsQuery = SELECT.from('sales.Products').where({ id: productsIds });
-        const products: Products = await cds.run(productsQuery);        
-
-        items.forEach((item) => {
-            const foundDbProduct = products.find((product) => product.id === item.product_id);
-            if (!foundDbProduct) {
-                return request.reject(HttpStatus.BAD_REQUEST, `Product ${item.product_id} not found`)
-            }
-
-            if (foundDbProduct.stock === 0) {
-                return request.reject(HttpStatus.BAD_REQUEST, `Product ${foundDbProduct.name} (${foundDbProduct.id}) out of stock`)
-            }
-        });
-
-        let totalAmount = 0;
-        items.forEach((item) => {
-            totalAmount += (item.quantity as number) * (item.price as number);
-        });
-        if (totalAmount > 30000) {
-            totalAmount = totalAmount * 0.9;        
-        }
-
-        request.data.totalAmount = totalAmount;
+        
+        request.data.totalAmount = result.totalAmount;
     });
 
     service.after('CREATE', 'SalesOrderHeaders', async (results: SalesOrderHeaders, request: Request) => {

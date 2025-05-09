@@ -68,21 +68,21 @@ export class SalesOrderHeaderModel {
     }
 
     public calculateTotalAmount(): number { 
-        this.totalAmount = 0;
+        let totalAmount = 0;
         this.items.forEach((item) => {
-            this.totalAmount += (item.quantity as number) * (item.price as number);
+            totalAmount += (item.quantity as number) * (item.price as number);
         });
 
-        return this.totalAmount;
+        return totalAmount;
     }
 
     public calculateDiscount(): number {
-        this.totalAmount = this.calculateTotalAmount();
-        if (this.totalAmount > 30000) {
-            this.totalAmount = this.totalAmount * 0.9;
+        let totalAmount = this.calculateTotalAmount();
+        if (totalAmount > 30000) {
+            totalAmount = totalAmount * 0.9;
         }
 
-        return this.totalAmount;
+        return totalAmount;
     }
 
     private validateCustomerOnCreation(customerId: CreationPayload['customer_id']): CreationPayloadValidationResult {
