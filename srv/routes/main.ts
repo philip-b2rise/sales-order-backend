@@ -12,7 +12,7 @@ import { salesOrderHeaderController } from '@/factories/controllers/sales-order-
 
 export default (service: Service) => {
     service.before('READ', '*', (request: Request) => {
-        if (!request.user.is('read_only_user')) {
+        if (!request.user.is('read_only_user') && !request.user.is('admin')) {
             return request.reject(HttpStatus.FORBIDDEN, 'Access denied');
         }
     });
