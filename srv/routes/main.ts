@@ -1,12 +1,14 @@
-import { Request, Service } from '@sap/cds';
 import './configs/module-alias';
 
-import { CompleteRequest } from './protocols';
-import { CustomerServiceImpl } from './services/customer/implementation';
-import { HttpStatus } from './utils/http';
-import { customerController } from './factories/controllers/customer';
-import { salesOrderHeaderController } from './factories/controllers/sales-order-header';
+import { Request, Service } from '@sap/cds';
+
 import { Customers, SalesOrderHeaders } from '@models/sales';
+
+import { CompleteRequest } from '@/routes/protocols';
+import { CustomerServiceImpl } from '@/services/customer/implementation';
+import { HttpStatus } from '@/utils/http';
+import { customerController } from '@/factories/controllers/customer';
+import { salesOrderHeaderController } from '@/factories/controllers/sales-order-header';
 
 export default (service: Service) => {
     service.before('READ', '*', (request: Request) => {

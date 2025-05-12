@@ -1,5 +1,5 @@
 import { CustomerModel } from '@/models/customer';
-import { CustomerService } from './protocols';
+import { CustomerService } from '@/services/customer/protocols';
 import { Customers } from '@models/sales';
 
 export class CustomerServiceImpl implements CustomerService {
