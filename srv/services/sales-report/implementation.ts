@@ -15,4 +15,14 @@ export class SalesReportServiceImpl implements SalesReportService {
 
         return reportData.map((report) => report.toObject());
     }
+
+    public async findByCustomerId(customerId: string): Promise<SalesReportByDays[] | null> {
+        const reportData = await this.repository.findByCustomerId(customerId);
+
+        if (!reportData) {
+            return null;
+        }
+
+        return reportData.map((report) => report.toObject());
+    }
 }

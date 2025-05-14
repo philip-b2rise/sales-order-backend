@@ -12,21 +12,36 @@ export class SalesReportRepositoryImpl implements SalesReportRepository {
         daysDifference.setDate(daysDifference.getDate() - days);
         const startDate = daysDifference.toISOString();
 
-        const sql = SELECT.from('sales.SalesOrderHeaders')
-            .columns(
-                'id as salesOrderId',
-                'totalAmount as salesOrderTotalAmount',
-                'customer.id as cuustomerId',
-                // eslint-disable-next-line quotes
-                `customer.firstName || ' ' || customer.lastName as customerFullName`
-            )
-            .where({ createdAt: { between: startDate, and: today } });
+        const sql = this.getReportBaseSql().where({ createdAt: { between: startDate, and: today } });
 
         const salesReports = await cds.run(sql);
 
+        return this.mapReportResult(salesReports);
+    }
+
+    public async findByCustomerId(customerId: string): Promise<SalesReportModel[] | null> {
+        const sql = this.getReportBaseSql().where({ customer_id: customerId });
+
+        const salesReports = await cds.run(sql);
+
+        return this.mapReportResult(salesReports);
+    }
+
+    private getReportBaseSql(): cds.ql.SELECT<unknown, unknown> {
+        return SELECT.from('sales.SalesOrderHeaders').columns(
+            'id as salesOrderId',
+            'totalAmount as salesOrderTotalAmount',
+            'customer.id as cuustomerId',
+            // eslint-disable-next-line quotes
+            `customer.firstName || ' ' || customer.lastName as customerFullName`
+        );
+    }
+
+    private mapReportResult(salesReports: SalesReportByDays[]): SalesReportModel[] | null {
         if (!salesReports.length) {
             return null;
         }
+
         return salesReports.map((salesReport: SalesReportByDays) =>
             SalesReportModel.with({
                 salesOrderId: salesReport.salesOrderId as string,
