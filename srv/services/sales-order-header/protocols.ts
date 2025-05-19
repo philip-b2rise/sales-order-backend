@@ -1,11 +1,15 @@
 import { User } from '@sap/cds';
 
 import { Payload as BulkCreateSalesOrderPayload } from '@models/db/types/BulkCreateSalesOrder';
+import { CustomerModel } from '@/models/customer';
+import { ProductModel } from '@/models/product';
 import { SalesOrderHeader, SalesOrderHeaders } from '@models/sales';
 
 export type CreationPayloadValidationResult = {
     hasError: boolean;
     totalAmount?: number;
+    products?: ProductModel[];
+    customer?: CustomerModel;
     error?: Error;
 };
 

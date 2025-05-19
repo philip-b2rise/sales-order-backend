@@ -24,25 +24,20 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
     ) {}
 
     public async beforeCreate(params: SalesOrderHeader): Promise<CreationPayloadValidationResult> {
-        const products = await this.getProductsByIds(params);
-        if (!products) {
-            return {
-                hasError: true,
-                error: new Error('Products not found')
-            };
+        const productValidationResult = await this.validateProductsOnCreation(params);
+        if (!productValidationResult.hasError) {
+            return productValidationResult;
         }
-        const items = this.getSalesOrderItems(params, products);
+        const items = this.getSalesOrderItems(params, productValidationResult.products as ProductModel[]);
         const header = this.getSalesOrderHeader(params, items);
-        const customer = await this.getCustomerById(params);
-
-        if (!customer) {
-            return {
-                hasError: true,
-                error: new Error('Customer not found')
-            };
+        const customerValidationResult = await this.validateCustomerOnCreation(params);
+        if (!customerValidationResult.hasError) {
+            return customerValidationResult;
         }
 
-        const headerValidationResult = header.validateCreationPayload({ customer_id: customer.id });
+        const headerValidationResult = header.validateCreationPayload({
+            customer_id: (customerValidationResult.customer as CustomerModel).id
+        });
 
         if (headerValidationResult.hasError) {
             return headerValidationResult;
@@ -82,30 +77,25 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
         await this.salesOrderLogRepository.create(logs);
     }
 
-    // eslint-disable-next-line max-lines-per-function
     public async bulkCreate(
         headers: BulkCreateSalesOrderPayload[],
         loggedUser: User
     ): Promise<CreationPayloadValidationResult> {
         const bulkCreateHeaders: SalesOrderHeaderModel[] = [];
         for (const headerObject of headers) {
-            const products = await this.getProductsByIds(headerObject);
-            if (!products) {
-                return {
-                    hasError: true,
-                    error: new Error('Products not found')
-                };
+            const productsValidationResult = await this.validateProductsOnCreation(headerObject);
+            if (!productsValidationResult.hasError) {
+                return productsValidationResult;
             }
-            const items = this.getSalesOrderItems(headerObject, products);
+            const items = this.getSalesOrderItems(headerObject, productsValidationResult.products as ProductModel[]);
             const header = this.getSalesOrderHeader(headerObject, items);
-            const customer = await this.getCustomerById(headerObject);
-            if (!customer) {
-                return {
-                    hasError: true,
-                    error: new Error('Customer not found')
-                };
+            const customerValidationResult = await this.validateCustomerOnCreation(headerObject);
+            if (!customerValidationResult.hasError) {
+                return customerValidationResult;
             }
-            const headerValidationResult = header.validateCreationPayload({ customer_id: customer.id });
+            const headerValidationResult = header.validateCreationPayload({
+                customer_id: customerValidationResult.customer?.id as string
+            });
             if (headerValidationResult.hasError) {
                 return headerValidationResult;
             }
@@ -115,6 +105,38 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
         await this.afterCreate(headers, loggedUser);
         return {
             hasError: false
+        };
+    }
+
+    private async validateCustomerOnCreation(
+        header: SalesOrderHeader | BulkCreateSalesOrderPayload
+    ): Promise<CreationPayloadValidationResult> {
+        const customer = await this.getCustomerById(header);
+        if (!customer) {
+            return {
+                hasError: true,
+                error: new Error('Customer not found')
+            };
+        }
+        return {
+            hasError: false,
+            customer
+        };
+    }
+
+    private async validateProductsOnCreation(
+        header: SalesOrderHeader | BulkCreateSalesOrderPayload
+    ): Promise<CreationPayloadValidationResult> {
+        const products = await this.getProductsByIds(header);
+        if (!products) {
+            return {
+                hasError: true,
+                error: new Error('Products not found')
+            };
+        }
+        return {
+            hasError: false,
+            products
         };
     }
 
