@@ -16,7 +16,7 @@ export class SalesOrderHeaderRepositoryImpl implements SalesOrderHeaderRepositor
                 'totalAmount',
                 'customer.id as customerId',
                 'items.quantity as item_quantity',
-                'item.price as item_price',
+                'items.price as item_price',
                 'items.product.id as product_id',
                 'items.product.name as product_name',
                 'items.product.price as product_price',
