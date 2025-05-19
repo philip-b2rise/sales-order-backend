@@ -1,0 +1,48 @@
+@baseURL=http://localhost:4004/odata/v4/main
+@id=6e2b7df7-a0a8-4758-ab43-08f5a61890b6
+@customerId=22781501-5700-460d-8bbc-488ea34bcbf1
+@productId1=19655033-e5e0-4ed2-8d8e-54409a8baebb
+# 0 stock
+@productId2=25701028-03a5-4c5e-979d-ad12231b14a1
+
+POST {{baseURL}}/bulkCreateSalesOrder
+Content-Type: application/json
+Authorization: Basic philip:philip12
+
+{
+    "payload": [
+        {
+            "id": "{{id}}",
+            "customer_id": "{{customerId}}",    
+            "items": [
+                {
+                    "id": "386a9f23-d2d4-4de4-af2f-3206d50fd6b7",
+                    "header_id": "{{id}}",
+                    "product_id": "{{productId2}}",
+                    "quantity": 10,
+                    "price": 1000
+                },
+                {
+                    "id": "d6794757-a545-4724-b403-c4d0705edd00",
+                    "header_id": "{{id}}",
+                    "product_id": "{{productId2}}",
+                    "quantity": 5,
+                    "price": 5000
+                }
+            ]
+        },
+                {
+            "id": "{{id}}",
+            "customer_id": "{{customerId}}",    
+            "items": [
+                {
+                    "id": "386a9f23-d2d4-4de4-af2f-3206d50fd6b1",
+                    "header_id": "{{id}}",
+                    "product_id": "{{productId2}}",
+                    "quantity": 100,
+                    "price": 1000
+                }
+            ]
+        }
+    ]
+}

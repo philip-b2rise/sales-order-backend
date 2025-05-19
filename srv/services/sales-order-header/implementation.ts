@@ -24,25 +24,22 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
     ) {}
 
     public async beforeCreate(params: SalesOrderHeader): Promise<CreationPayloadValidationResult> {
-        const productValidationResult = await this.validateProductsOnCreation(params);
-        if (!productValidationResult.hasError) {
-            return productValidationResult;
+        const productsValidationResult = await this.validateProductsOnCreation(params);
+        if (productsValidationResult.hasError) {
+            return productsValidationResult;
         }
-        const items = this.getSalesOrderItems(params, productValidationResult.products as ProductModel[]);
+        const items = this.getSalesOrderItems(params, productsValidationResult.products as ProductModel[]);
         const header = this.getSalesOrderHeader(params, items);
         const customerValidationResult = await this.validateCustomerOnCreation(params);
-        if (!customerValidationResult.hasError) {
+        if (customerValidationResult.hasError) {
             return customerValidationResult;
         }
-
         const headerValidationResult = header.validateCreationPayload({
             customer_id: (customerValidationResult.customer as CustomerModel).id
         });
-
         if (headerValidationResult.hasError) {
             return headerValidationResult;
         }
-
         return {
             hasError: false,
             totalAmount: header.calculateDiscount()
@@ -55,22 +52,18 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
     ): Promise<void> {
         const headersAsArray = Array.isArray(params) ? params : ([params] as SalesOrderHeaders);
         const logs: SalesOrderLogModel[] = [];
-
         for (const header of headersAsArray) {
             const products = (await this.getProductsByIds(header)) as ProductModel[];
             const items = this.getSalesOrderItems(header, products);
             const salesOrderHeader = this.getExistingSalesOrderHeader(header, items);
             const productsData = salesOrderHeader.getProductData();
-
             for (const product of products) {
                 const foundProduct = productsData.find((productData) => productData.id === product.id);
                 product.sell(foundProduct?.quantity as number);
                 await this.productRepository.updateStock(product);
             }
-
             const user = this.getLoggedUser(loggedUser);
             const log = this.getSalesOrderLog(salesOrderHeader, user);
-
             logs.push(log);
         }
 
@@ -84,17 +77,17 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
         const bulkCreateHeaders: SalesOrderHeaderModel[] = [];
         for (const headerObject of headers) {
             const productsValidationResult = await this.validateProductsOnCreation(headerObject);
-            if (!productsValidationResult.hasError) {
+            if (productsValidationResult.hasError) {
                 return productsValidationResult;
             }
             const items = this.getSalesOrderItems(headerObject, productsValidationResult.products as ProductModel[]);
             const header = this.getSalesOrderHeader(headerObject, items);
             const customerValidationResult = await this.validateCustomerOnCreation(headerObject);
-            if (!customerValidationResult.hasError) {
+            if (customerValidationResult.hasError) {
                 return customerValidationResult;
             }
             const headerValidationResult = header.validateCreationPayload({
-                customer_id: customerValidationResult.customer?.id as string
+                customer_id: (customerValidationResult.customer as CustomerModel).id
             });
             if (headerValidationResult.hasError) {
                 return headerValidationResult;
