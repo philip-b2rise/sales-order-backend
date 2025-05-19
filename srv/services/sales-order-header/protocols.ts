@@ -10,6 +10,7 @@ export type CreationPayloadValidationResult = {
     totalAmount?: number;
     products?: ProductModel[];
     customer?: CustomerModel;
+    headers?: BulkCreateSalesOrderPayload[];
     error?: Error;
 };
 
