@@ -52,4 +52,10 @@ export default (service: Service) => {
         const { user, data } = request;
         return salesOrderHeaderController.bulkCreate(data.payload, user);
     });
+    service.on('cloneSalesOrder', async (request: Request) => {
+        const { user, data } = request;
+        console.log(data);
+        console.log(user);
+        return true;
+    });
 };

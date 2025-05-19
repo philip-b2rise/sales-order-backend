@@ -95,8 +95,11 @@ Authorization: Basic john:john12
 GET {{baseURL}}/SalesOrderHeaders?$orderby=totalAmount desc
 Content-Type: application/json
 Authorization: Basic john:john12
+
 ###
+# Clone sales order
+POST {{baseURL}}/SalesOrderHeaders(20592792-3d97-4542-94c4-ec4d1f9e041e)/cloneSalesOrder
+Content-Type: application/json
+Authorization: Basic philip:philip12
 
-
-
-
+{}
