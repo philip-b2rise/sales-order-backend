@@ -16,8 +16,6 @@
     "@cap-js/sqlite": "^1",
     "@eslint/js": "^9.26.0",
     "@types/axios": "^0.14.4",
-    "@types/chai": "^5.2.2",
-    "@types/express": "^5.0.1",
     "@types/module-alias": "^2.0.4",
     "@types/node": "^22.15.14",
     "chai": "^5.2.0",
