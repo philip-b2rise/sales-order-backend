@@ -1,5 +1,3 @@
-import { ExpectedResult as SalesReportByDays } from '@models/db/types/SalesReportByDays';
-
 import { BaseControllerImpl } from '@/controllers/base/implementation';
 import { BaseControllerResponse } from '@/controllers/base/protocol';
 import { SalesReportController } from '@/controllers/sales-report/protocols';
@@ -20,7 +18,13 @@ export class SalesReportControllerImpl extends BaseControllerImpl implements Sal
         return this.success(result.value);
     }
 
-    public async findByCustomerId(customerId: string): Promise<SalesReportByDays[] | null> {
-        return this.service.findByCustomerId(customerId);
+    public async findByCustomerId(customerId: string): Promise<BaseControllerResponse> {
+        const result = await this.service.findByCustomerId(customerId);
+
+        if (result.isLeft()) {
+            return this.error(result.value.code, result.value.message);
+        }
+
+        return this.success(result.value);
     }
 }
