@@ -44,6 +44,7 @@
     "clean": "rimraf gen dist mta_archives",
     "build": "mbt build --mtar sales-order-backend",
     "bd": "npm-run-all clean build",
-    "test:unit": "vitest --dir test/unit"
+    "test:unit": "vitest --dir test/unit",
+    "test:coverage": "vitest --coverage --run --silent"
   }
 }
