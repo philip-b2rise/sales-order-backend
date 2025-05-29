@@ -7,6 +7,8 @@ import { SalesReportService } from '@/services/sales-report/protocol';
 import { AbstractError, NotFoundError, ServerError } from '@/errors';
 
 export class SalesReportServiceImpl implements SalesReportService {
+    private readonly NOT_FOUND_ERROR_MESSAGE = 'Report data not found';
+
     constructor(private readonly repository: SalesReportRepository) {}
 
     public async findByDays(days = 7): Promise<Either<AbstractError, SalesReportByDays[]>> {
@@ -15,7 +17,7 @@ export class SalesReportServiceImpl implements SalesReportService {
 
             if (!reportData) {
                 const stack = new Error().stack as string;
-                return left(new NotFoundError('Report data not found', stack));
+                return left(new NotFoundError(this.NOT_FOUND_ERROR_MESSAGE, stack));
             }
 
             const mappedData = reportData.map((report) => report.toObject());
@@ -27,13 +29,21 @@ export class SalesReportServiceImpl implements SalesReportService {
         }
     }
 
-    public async findByCustomerId(customerId: string): Promise<SalesReportByDays[] | null> {
-        const reportData = await this.repository.findByCustomerId(customerId);
+    public async findByCustomerId(customerId: string): Promise<Either<AbstractError, SalesReportByDays[]>> {
+        try {
+            const reportData = await this.repository.findByCustomerId(customerId);
 
-        if (!reportData) {
-            return null;
+            if (!reportData) {
+                const stack = new Error().stack as string;
+                return left(new NotFoundError(this.NOT_FOUND_ERROR_MESSAGE, stack));
+            }
+
+            const mappedData = reportData.map((report) => report.toObject());
+
+            return right(mappedData);
+        } catch (error) {
+            const errorInstance: Error = error as Error;
+            return left(new ServerError(errorInstance.stack as string, errorInstance.message));
         }
-
-        return reportData.map((report) => report.toObject());
     }
 }

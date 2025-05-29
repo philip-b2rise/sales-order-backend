@@ -6,5 +6,5 @@ import { AbstractError } from '@/errors';
 
 export interface SalesReportService {
     findByDays(days: number): Promise<Either<AbstractError, SalesReportByDays[]>>;
-    findByCustomerId(customerId: string): Promise<SalesReportByDays[] | null>;
+    findByCustomerId(customerId: string): Promise<Either<AbstractError, SalesReportByDays[]>>;
 }
