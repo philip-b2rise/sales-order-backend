@@ -5,8 +5,6 @@ import { Request, Service } from '@sap/cds';
 
 import { Customers, SalesOrderHeaders } from '@models/sales';
 
-import { CompleteRequest } from '@/routes/protocols';
-import { CustomerServiceImpl } from '@/services/customer/implementation';
 import { HttpStatus } from '@/utils/http';
 import { customerController } from '@/factories/controllers/customer';
 import { salesOrderHeaderController } from '@/factories/controllers/sales-order-header';
@@ -23,11 +21,12 @@ export default (service: Service) => {
             return request.reject(HttpStatus.FORBIDDEN, 'Access denied for write/delete operations');
         }
     });
-    service.after('READ', 'Customers', (results: Customers, request) => {
-        const completeRequest = request as unknown as CompleteRequest<Customers>;
-        completeRequest.results = customerController.afterRead(results);
-        const service = new CustomerServiceImpl();
-        return service.afterRead(results);
+    service.after('READ', 'Customers', (results: Customers, request: Request) => {
+        const result = customerController.afterRead(results);
+        if (result.status >= 400) {
+            return request.reject(result.status, result.data as string);
+        }
+        return result.data;
     });
     service.before('CREATE', 'SalesOrderHeaders', async (request: Request) => {
         const params = request.data;
