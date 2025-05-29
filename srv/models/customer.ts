@@ -29,6 +29,10 @@ export class CustomerModel {
     }
 
     public setDefaultEmailDomain(): CustomerModel {
+        if (!this.props.email) {
+            return this;
+        }
+
         if (!this.props.email?.includes('@')) {
             this.props.email = `${this.props.email}@sap.com`;
         }
