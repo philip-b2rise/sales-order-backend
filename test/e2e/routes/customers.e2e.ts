@@ -1,21 +1,31 @@
-import cds from '@sap/cds';
-import { resolve } from 'path';
+import { api } from '@tests/e2e/config/api';
 
-const rootDir = resolve(__dirname, '..', '..', '..');
-const api = cds.test(rootDir);
-api.axios.defaults.auth = { username: 'john', password: 'john12' };
+describe('Customers routes', () => {
+    describe('afterRead Customers', () => {
+        it('should get all customers with @sap.com', async () => {
+            const { data } = await api.get('/sales-order/Customers');
+            const { value: customers } = data;
 
-describe('GET API Test', () => {
-    it('should get all customers with @sap.com email', async () => {
-        const { data } = await api.get('/sales-order/Customers');
-        const { value: customers } = data;
+            expect(customers).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        email: expect.stringContaining('@sap.com')
+                    })
+                ])
+            );
+        });
 
-        expect(customers).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining({
-                    email: expect.stringContaining('@sap.com')
-                })
-            ])
-        );
+        it('should return at least one email with @gmail.com', async () => {
+            const { data } = await api.get('/sales-order/Customers');
+            const { value: customers } = data;
+
+            expect(customers).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        email: expect.stringContaining('@gmail.com')
+                    })
+                ])
+            );
+        });
     });
 });
