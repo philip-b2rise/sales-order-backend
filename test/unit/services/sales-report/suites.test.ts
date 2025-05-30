@@ -20,43 +20,86 @@ const makeSut = (): SutTypes => {
 };
 
 describe('SalesReportService test cases', () => {
-    it('should throw if SalesReportRepository throws', async () => {
-        const { sut, salesReportRepository } = makeSut();
+    describe('method findByDays test cases', () => {
+        it('should return ServerError if SalesReportRepository throws', async () => {
+            const { sut, salesReportRepository } = makeSut();
+            vi.spyOn(salesReportRepository, 'findByDays').mockRejectedValueOnce(() => {
+                throw new ServerError('any_error');
+            });
 
-        vi.spyOn(salesReportRepository, 'findByDays').mockRejectedValueOnce(() => {
-            throw new ServerError('any_error');
+            const result = await sut.findByDays();
+
+            expect(result.isLeft()).toBeTruthy();
+            expect(result.value).toBeInstanceOf(ServerError);
         });
 
-        const result = await sut.findByDays();
+        it('should return a NotFoundError if no records were found', async () => {
+            const { sut, salesReportRepository } = makeSut();
+            vi.spyOn(salesReportRepository, 'findByDays').mockReturnValueOnce(Promise.resolve(null));
 
-        expect(result.isLeft()).toBeTruthy();
-        expect(result.value).toBeInstanceOf(ServerError);
+            const result = await sut.findByDays();
+
+            expect(result.isLeft()).toBeTruthy();
+            expect(result.value).toBeInstanceOf(NotFoundError);
+        });
+
+        it('should return a list of sales report by days', async () => {
+            const { sut } = makeSut();
+            const result = await sut.findByDays();
+
+            expect(result.isRight()).toBeTruthy();
+            expect(result.value).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        salesOrderTotalAmount: 100,
+                        customerFullName: 'any_name any_last_name'
+                    })
+                ])
+            );
+        });
     });
 
-    it('should return a not found error if no recors were found', async () => {
-        const { sut, salesReportRepository } = makeSut();
+    describe('method findByCustomerId test cases', () => {
+        it('should return ServerError if SalesReportRepository throws', async () => {
+            const { sut, salesReportRepository } = makeSut();
+            vi.spyOn(salesReportRepository, 'findByCustomerId').mockRejectedValueOnce(() => {
+                throw new ServerError('any_error');
+            });
 
-        vi.spyOn(salesReportRepository, 'findByDays').mockReturnValueOnce(Promise.resolve(null));
+            const customerId = crypto.randomUUID();
+            const result = await sut.findByCustomerId(customerId);
 
-        const result = await sut.findByDays();
+            expect(result.isLeft()).toBeTruthy();
+            expect(result.value).toBeInstanceOf(ServerError);
+        });
 
-        expect(result.isLeft()).toBeTruthy();
-        expect(result.value).toBeInstanceOf(NotFoundError);
-    });
+        it('should return a NotFoundError if no records were found', async () => {
+            const { sut, salesReportRepository } = makeSut();
+            vi.spyOn(salesReportRepository, 'findByCustomerId').mockReturnValueOnce(Promise.resolve(null));
 
-    it('should return a list of sales report by days', async () => {
-        const { sut } = makeSut();
+            const customerId = crypto.randomUUID();
+            const result = await sut.findByCustomerId(customerId);
 
-        const result = await sut.findByDays();
+            expect(result.isLeft()).toBeTruthy();
+            expect(result.value).toBeInstanceOf(NotFoundError);
+        });
 
-        expect(result.isRight()).toBeTruthy();
-        expect(result.value).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining({
-                    salesOrderTotalAmount: 100,
-                    customerFullName: 'any_name any_last_name'
-                })
-            ])
-        );
+        it('should return a list of sales report by customer id', async () => {
+            const { sut } = makeSut();
+
+            const customerId = crypto.randomUUID();
+            const result = await sut.findByCustomerId(customerId);
+
+            expect(result.isRight()).toBeTruthy();
+            expect(result.value).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        customerId,
+                        salesOrderTotalAmount: 50,
+                        customerFullName: 'any_name any_last_name'
+                    })
+                ])
+            );
+        });
     });
 });
