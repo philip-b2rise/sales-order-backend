@@ -1,12 +1,14 @@
-@baseURL=http://localhost:4004/odata/v4/main
+@baseURL=http://localhost:4004/sales-order
 @id=ea9d07f6-7b6b-4a45-a168-1a55b6c42959
 
 GET {{baseURL}}/Customers
 Content-Type: application/json
+Authorization: Basic philip:philip12
 
 ###
 POST {{baseURL}}/Customers
 Content-Type: application/json
+Authorization: Basic philip:philip12
 
 {
     "id": "{{id}}",
@@ -18,10 +20,12 @@ Content-Type: application/json
 ###
 DELETE {{baseURL}}/Customers(id={{id}})
 Content-Type: application/json
+Authorization: Basic philip:philip12
 
 ###
 PUT {{baseURL}}/Customers(id={{id}})
 Content-Type: application/json
+Authorization: Basic philip:philip12
 
 {
     "firstName": "Mark" // does not work with PUT, only with PATCH
@@ -30,6 +34,7 @@ Content-Type: application/json
 ###
 PATCH {{baseURL}}/Customers(id={{id}})
 Content-Type: application/json
+Authorization: Basic philip:philip12
 
 {
     "firstName": "Mark"
