@@ -10,7 +10,6 @@ describe('GetSalesReportByDays route', () => {
     it('should return a sales report with status 200', async () => {
         const { data, status } = await api.get('/sales-order/getSalesReportByDays(days=20)');
         const { value: salesReport } = data;
-        console.log(salesReport);
 
         expect(status).toBe(200);
         expect(salesReport).toEqual(
