@@ -26,7 +26,11 @@ export default (service: Service) => {
         if (result.status >= 400) {
             return request.reject(result.status, result.data as string);
         }
-        return result.data;
+        const hydratedData = result.data as Customers;
+        return results.map((customer, index) => {
+            customer.email = hydratedData[index].email;
+            return customer;
+        });
     });
     service.before('CREATE', 'SalesOrderHeaders', async (request: Request) => {
         const params = request.data;
